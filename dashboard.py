@@ -117,7 +117,7 @@ class df_exp(Viewer):
         except:
             print(self.shot)
 
-inst = df_exp()
-
-inst.show()
+if __name__ == '__main__':
+    inst = df_exp()
+    inst.show()
 
