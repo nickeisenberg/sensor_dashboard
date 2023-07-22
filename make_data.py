@@ -34,8 +34,8 @@ class make_data():
         self._generate()
         self._generate_parquet()
     
-    @classmethod
-    def b_paths(cls, size):
+    @staticmethod
+    def b_paths(size):
         data = np.random.normal(0, 1, (100, size))
         data[0] *= 0
         data = data.cumsum(axis=0)
