@@ -7,7 +7,7 @@ from hvplot.ui import Controls
 import hvplot.pandas
 from make_data import SENSOR_SHOTS, AXIS
 
-class df_exp(Viewer):
+class timeseries(Viewer):
     
     # tab 1 classes
     axis = param.Selector()
@@ -16,16 +16,18 @@ class df_exp(Viewer):
     
     # tab 2 classes
     xlim = param.Range()
+    
+    # tab 3 classes
+    notes = pn.widgets.TextEditor()
 
     def __panel__(self):
         return self._layout
 
-    def __init__(self, **params):
+    def __init__(self): #, **params):
         
         self._populate_main()
-        self._retrieve_parquet()
 
-        super().__init__(**params)
+        super().__init__() #**params)
 
         #-Set the controls for the tabs--------------------
         # Tab 1
@@ -39,7 +41,6 @@ class df_exp(Viewer):
             self.param, parameters=['xlim'],
             sizing_mode='stretch_width', max_width=300, show_name=False,
         )
-        #--------------------------------------------------
 
         self._tabs = pn.Tabs(
             tabs_location='left', width=400
@@ -55,20 +56,24 @@ class df_exp(Viewer):
             sizing_mode='stretch_both'
         )
         
+        self._retrieve_parquet()
         self._toggle_main()
         self._update_main()
         self._update_axes()
         self._plot()
-    
+
     def _populate_main(self):
         self.param['axis'].objects = AXIS
         self.param['axis'].default = 'C1'
         self.param['sensor'].objects = [*SENSOR_SHOTS['C1'].keys()]
         self.param['sensor'].default = 'Sensor_1'
         self.param['shot'].objects = [*SENSOR_SHOTS['C1']['Sensor_1']]
+        # self.param['shot'].bounds[0] = [*SENSOR_SHOTS['C1']['Sensor_1']][0]
+        # self.param['shot'].bounds[-1] = [*SENSOR_SHOTS['C1']['Sensor_1']][-1]
+        # self.param['shot'].step = [*SENSOR_SHOTS['C1']['Sensor_1']][-1]
         self.param['xlim'].bounds = [0, 100]
         self.param['xlim'].step = 1
-
+    
     @param.depends('axis', 'sensor', watch=True)
     def _retrieve_parquet(self):
         self._parquet = pq.read_table(
@@ -78,13 +83,14 @@ class df_exp(Viewer):
 
     @param.depends('axis', 'sensor', 'shot', watch=True)
     def _toggle_main(self):
-        parameters = ['axis', 'sensor', 'shot']
-        self._main_controls.parameters = parameters
+        # parameters = ['axis', 'sensor', 'shot']
+        # self._main_controls.parameters = parameters
 
         # Control other tabs
         tabs = [
             ('Fields', self._main_controls),
-            ('Axes', self._axes_controls)
+            ('Axes', self._axes_controls),
+            ('Notes', self.notes),
         ]
         self._tabs[:] = tabs
 
@@ -117,7 +123,54 @@ class df_exp(Viewer):
         except:
             print(self.shot)
 
+
 if __name__ == '__main__':
-    inst = df_exp()
+    inst = timeseries()
     inst.show()
+
+
+
+    # class X(Viewer):
+    #     ran = param.Range(default=(0, 10), bounds=(0, 10))
+    #     
+    #     ran2 = pn.widgets.IntRangeSlider(value=(0, 10), start=0, end=10, step=1)
+    # 
+    #     text = pn.widgets.StaticText()
+    # 
+    #     def __panel__(self):
+    #         return self._layout
+    # 
+    #     def __init__(self):
+    # 
+    #         super().__init__() #**params)
+    # 
+    #         self.main = pn.Param(
+    #             self.param, parameters=['ran'],
+    #             sizing_mode='stretch_width', max_width=300, show_name=False,
+    #         )
+    # 
+    #         self._layout = pn.Column(
+    #             pn.Row(
+    #                 self.main,
+    #                 self.ran2,
+    #                 self.text,
+    #                 sizing_mode='stretch_width'
+    #             ),
+    #             pn.layout.HSpacer(),
+    #             sizing_mode='stretch_both'
+    #         )
+    # 
+    #         self._toggle_main()
+    #         self._toggle_main2()
+    # 
+    #     @param.depends('ran', watch=True)
+    #     def _toggle_main(self):
+    #         self.text.value = f"{self.ran}"
+    #     
+    #     # @pn.depends(ran2, watch=True)
+    #     # def _toggle_main2(self):
+    #     #     self.text.value = f"{self.ran2.value}"
+    # 
+    # X().show()
+
 
