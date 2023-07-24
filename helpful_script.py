@@ -1,3 +1,11 @@
+'''
+found this here:
+https://discourse.holoviz.org/t/clear-fileinput-widget-after-file-uplaod/4759 
+
+It was quite helpful
+'''
+
+
 import panel as pn
 
 upload =  pn.Row(

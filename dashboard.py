@@ -280,7 +280,6 @@ class App(Viewer):
         ]
         self._tabs[:] = tabs
 
-
 if __name__ == '__main__':
     app = App()
     app.show()

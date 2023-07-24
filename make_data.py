@@ -78,14 +78,7 @@ class make_data():
                )
                pq.write_table(parq, os.path.join(to_path, f'{sen}.parquet'))
 
-
-x = pd.DataFrame(data=[1, 2, 3, 4], columns = [4000])
-
-x
-
-pa.Table.from_pandas(x)
-
-if __name__ == '__main__':
-    inst = make_data(path='./data_')
+# if __name__ == '__main__':
+#     inst = make_data(path='./data_')
 
 
