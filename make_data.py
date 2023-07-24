@@ -31,8 +31,9 @@ class make_data():
         self.path = path
         self.axis = AXIS
         self.sensor_shots = SENSOR_SHOTS
+        self.sensor_data = {}
         self._generate()
-        self._generate_parquet()
+        self._generate_parquet_multi_files()
     
     @staticmethod
     def b_paths(size):
@@ -42,26 +43,49 @@ class make_data():
         return data
     
     def _generate(self):
-        self.sensor_data = {}
         for k in self.sensor_shots.keys():
             self.sensor_data[k] = {}
             for sen, shot in self.sensor_shots[k].items():
                 self.sensor_data[k][sen] = self.b_paths(shot.size)
 
-    def _generate_parquet(self):
+    def _generate_parquet_multi_files(self):
         for k in self.sensor_data.keys():
-            to_path = os.path.join(self.path, k)
-            os.makedirs(to_path)
             for sen, d in self.sensor_data[k].items():
-                parq = pa.Table.from_pandas(
-                    pd.DataFrame(
-                        data=d,
-                        columns=self.sensor_shots[k][sen]
+                to_path = os.path.join(self.path, k, sen)
+                os.makedirs(to_path)
+                for shot, d in zip(self.sensor_shots[k][sen], d.T):
+                    parq = pa.Table.from_pandas(
+                        pd.DataFrame(
+                            data=d,
+                            columns=[shot]
+                        )
                     )
-                )
-                pq.write_table(parq, os.path.join(to_path, f'{sen}.parquet'))
+                    pq.write_table(
+                        parq,
+                        os.path.join(to_path, f'{shot}.parquet')
+                    )
+    
+    def _generate_parquet_one_file(self):
+       for k in self.sensor_data.keys():
+           to_path = os.path.join(self.path, k)
+           os.makedirs(to_path)
+           for sen, d in self.sensor_data[k].items():
+               parq = pa.Table.from_pandas(
+                   pd.DataFrame(
+                       data=d,
+                       columns=self.sensor_shots[k][sen]
+                   )
+               )
+               pq.write_table(parq, os.path.join(to_path, f'{sen}.parquet'))
+
+
+x = pd.DataFrame(data=[1, 2, 3, 4], columns = [4000])
+
+x
+
+pa.Table.from_pandas(x)
 
 if __name__ == '__main__':
-    inst = make_data(path='./data')
+    inst = make_data(path='./data_')
 
 
