@@ -231,7 +231,10 @@ class timeseries(Viewer):
     def _retrieve_parquet(self):
         self._parquet = pq.read_table(
             # f'./data_single/{self.axis}/{self.sensor}.parquet'
-            f'./data_multi/{self.axis}/{self.sensor}/{self.shot}.parquet'
+            # f'./data_multi/{self.axis}/{self.sensor}/{self.shot}.parquet'
+            os.path.join(
+                '.', 'data_multi', self.axis, self.sensor, f'{self.shot}.parquet'
+            )
         )
         self._parq_df = self._parquet.to_pandas()
 
