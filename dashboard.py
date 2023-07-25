@@ -51,7 +51,7 @@ class fileupload(Viewer):
     sl_shot = pn.widgets.IntInput(name='shot_number', start=0, end=10000, step=1)
     upload = pn.widgets.Button(name='Upload the file')
     notify = pn.widgets.StaticText(
-        name='Upload Status', value='No file selected'
+        name='Upload Status', value=''
     )
 
     def __panel__(self):
@@ -70,13 +70,14 @@ class fileupload(Viewer):
             self.upload,
             self.notify
         )
-    
-    @pn.depends(Flup, watch=True)
-    def update_notify(self):
-        try:
-            self.notify.value = 'File not yet uploaded'
-        except:
-            _ = ''
+   
+    # This feature only partially works. I need to work on it some more.
+    # @pn.depends(Flup, watch=True)
+    # def update_notify(self):
+    #     try:
+    #         self.notify.value = 'File not yet uploaded'
+    #     except:
+    #         _ = ''
 
     @pn.depends(upload, watch=True)
     def save_file(self):
@@ -110,7 +111,7 @@ class fileupload(Viewer):
             self.Flup = pn.widgets.FileInput(accept='.csv')
             # self.flup.append(pn.widgets.FileInput(accept='.csv'))
             self.flup.append(self.Flup)
-            self.notify.value = 'No file selected'
+            self.notify.value = ''
         except:
             _ = ''
 
