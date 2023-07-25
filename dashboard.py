@@ -188,7 +188,7 @@ class timeseries(Viewer):
         shots = [
             int(fn.split('.')[0]) for fn in os.listdir(
                 os.path.join(
-                    './data_multi/', self.axis, self.sensor
+                    '.', 'data_multi', self.axis, self.sensor
                 )
             ) if fn.endswith('.parquet')
         ]
@@ -202,7 +202,7 @@ class timeseries(Viewer):
             shots = [
                 int(fn.split('.')[0]) for fn in os.listdir(
                     os.path.join(
-                        './data_multi/', self.axis, self.sensor
+                        '.', 'data_multi', self.axis, self.sensor
                     )
                 ) if fn.endswith('.parquet')
             ]
